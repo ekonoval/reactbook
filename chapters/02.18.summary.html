@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chapter 2 - SUmmary</title>
+    <style>
+        body, textarea {
+            font-family: Courier;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- my app renders here -->
+</div>
+<script src="react/build/react-with-addons.js?v=1"></script>
+<script src="react/build/react-dom.js"></script>
+<script>
+    var ekvComp = React.createClass({
+        propTypes: {
+            initText: React.PropTypes.string.isRequired
+        },
+        getInitialState: function () {
+            return {
+                text: this.props.initText
+            };
+        },
+
+        _textChangeCustom: function (e) {
+            this.setState({
+                text: e.target.value
+            });
+        },
+
+        componentWillReceiveProps: function(newProps) {
+            this.setState({text : newProps.initText})
+        },
+
+        render: function () {
+            return React.DOM.div({id: 'rootDiv'},
+                React.DOM.textarea({
+                    value: this.state.text,
+                    onChange: this._textChangeCustom
+                }),
+                React.DOM.h1(null, this.state.text.length)
+            );
+            //return React.DOM.h1(null, this.props.initText);
+        }
+    });
+
+
+    var renderingComp = ReactDOM.render(
+        React.createElement(ekvComp, {
+            initText: 'init text'
+        }),
+        document.getElementById('app')
+    );
+
+    function external1() {
+        // renderingComp.setState({text: "From the outside world!"}); //antipattern
+        //renderingComp.props.initText = "PROPS from the outside";
+        renderingComp.componentWillReceiveProps({initText: "PROPS from the outside"});
+    }
+</script>
+
+    <button onclick="external1()">external access</button>
+
+</body>
+</html>
