@@ -34,9 +34,15 @@
 
             var descendingLocal = this.state.sortBy === column && !this.state.descending;
 
-            dataCopy.sort(function(a, b) {
-                return a[column] > b[column] ? 1 : -1;
-            });
+            if (descendingLocal) {
+                dataCopy.sort(function(a, b) {
+                    return a[column] < b[column] ? 1 : -1;
+                });
+            } else {
+                dataCopy.sort(function(a, b) {
+                    return a[column] > b[column] ? 1 : -1;
+                });
+            }
 
             this.setState({
                 data: dataCopy,
