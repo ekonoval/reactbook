@@ -20,7 +20,11 @@
         },
 
         getInitialState: function() {
-            return {data: this.props.initialData};
+            return {
+                data: this.props.initialData,
+                sortBy: null,
+                descending: false
+            };
         },
 
         _sort: function(e) {
@@ -28,12 +32,16 @@
 
             var dataCopy = this.state.data.slice();
 
+            var descendingLocal = this.state.sortBy === column && !this.state.descending;
+
             dataCopy.sort(function(a, b) {
                 return a[column] > b[column] ? 1 : -1;
             });
 
             this.setState({
-                data: dataCopy
+                data: dataCopy,
+                sortBy: column,
+                descending: descendingLocal
             });
         },
 
@@ -42,9 +50,12 @@
                 React.DOM.table(null,
                     React.DOM.thead({onClick: this._sort},
                         React.DOM.tr(null,
-                            this.props.headers.map(function (v, idx) {
-                                return React.DOM.th({key: idx}, v);
-                            })
+                            this.props.headers.map(function (title, idx) {
+                                if (this.state.sortBy === idx) {
+                                    title += this.state.descending ? ' \u2191' : ' \u2193';
+                                }
+                                return React.DOM.th({key: idx}, title);
+                            }, this)
                         )
                     ),
 
