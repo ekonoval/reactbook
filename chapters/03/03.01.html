@@ -79,12 +79,23 @@
 
           //tbody
           React.DOM.tbody({onDoubleClick: this._showEditor}, this.state.data.map(function (row, rowIdx) {
-            return React.DOM.tr({key: rowIdx},
-              row.map(function (cell, idx) {
-                return React.DOM.td({key: idx, 'data-row': rowIdx}, cell)
-              })
-            )
-          }))
+              return React.DOM.tr({key: rowIdx},
+                row.map(function (cell, cellIdx) {
+                  var tdContent = cell;
+
+                  var edit = this.state.edit;
+                  if (edit && edit.row === rowIdx && edit.cell === cellIdx) {
+                    tdContent = React.DOM.input({
+                      type: 'text',
+                      defaultValue: cell
+                    });
+                  }
+
+                  return React.DOM.td({key: cellIdx, 'data-row': rowIdx}, tdContent)
+                }, this)
+              )
+            }, this)
+          )
         )
       );
     }
