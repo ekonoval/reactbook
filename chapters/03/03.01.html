@@ -62,6 +62,20 @@
       });
     },
 
+    _saveFormEdited: function(e) {
+      e.preventDefault();
+
+      var input = e.target.firstChild;
+      var stateData = this.state.data.slice();
+
+      stateData[this.state.edit.row][this.state.edit.cell] = input.value;
+
+      this.setState({
+        edit: null,
+        data: stateData
+      });
+    },
+
     render: function () {
       return (
         React.DOM.table(null,
@@ -85,10 +99,12 @@
 
                   var edit = this.state.edit;
                   if (edit && edit.row === rowIdx && edit.cell === cellIdx) {
-                    tdContent = React.DOM.input({
-                      type: 'text',
-                      defaultValue: cell
-                    });
+                    tdContent = React.DOM.form({onSubmit: this._saveFormEdited},
+                      React.DOM.input({
+                        type: 'text',
+                        defaultValue: cell
+                      })
+                    );
                   }
 
                   return React.DOM.td({key: cellIdx, 'data-row': rowIdx}, tdContent)
