@@ -22,6 +22,8 @@
     _preSearchData: null,
 
     getInitialState: function () {
+      this._preSearchData = this.props.initialData;
+
       return {
         data: this.props.initialData,
         sortBy: null,
@@ -124,7 +126,7 @@
         return null;
       }
 
-      return React.DOM.tr({className: 'filter'},
+      return React.DOM.tr({className: 'filter', onChange: this._doSearch},
         this.props.headers.map(function(v, idx) {
           return React.DOM.td({key: idx},
             React.DOM.input({'data-idx': idx, type: 'text'})
@@ -133,9 +135,35 @@
       );
     },
 
-    _handleSearchVisibility: function() {
-      if (this.state.search) {
+    _doSearch: function(e) {
+      var needle = e.target.value.toLowerCase();
 
+      if (!needle) {
+        this.setState({
+          data: this._preSearchData
+        });
+
+        return ;
+      }
+
+      var idx = e.target.dataset.idx;
+      var searchData = this._preSearchData.filter(function(row) {
+        return row[idx].toString().toLowerCase().indexOf(needle) > -1;
+      });
+
+      this.setState({
+        data: searchData
+      });
+    },
+
+    _handleSearchVisibility: function() {
+      if (this.state.searchUsed) {
+        this.setState({
+          data: this._preSearchData,
+          searchUsed: false
+        });
+
+        this._preSearchData = false;
       } else {
         this._preSearchData = this.state.data;
         this.setState({
