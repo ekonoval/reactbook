@@ -76,46 +76,58 @@
       });
     },
 
-    render: function () {
-      return (
-        React.DOM.table(null,
-          //thead
-          React.DOM.thead({onClick: this._sort},
-            React.DOM.tr(null,
-              this.props.headers.map(function (title, idx) {
-                if (this.state.sortBy === idx) {
-                  title += this.state.descending ? ' \u2191' : ' \u2193';
-                }
-                return React.DOM.th({key: idx}, title);
-              }, this)
-            )
-          ),
-
-          //tbody
-          React.DOM.tbody({onDoubleClick: this._showEditor}, this.state.data.map(function (row, rowIdx) {
-              return React.DOM.tr({key: rowIdx},
-                row.map(function (cell, cellIdx) {
-                  var tdContent = cell;
-
-                  var edit = this.state.edit;
-                  if (edit && edit.row === rowIdx && edit.cell === cellIdx) {
-                    tdContent = React.DOM.form({onSubmit: this._saveFormEdited},
-                      React.DOM.input({
-                        type: 'text',
-                        defaultValue: cell
-                      })
-                    );
-                  }
-
-                  return React.DOM.td({key: cellIdx, 'data-row': rowIdx}, tdContent)
-                }, this)
-              )
+    _renderTable: function() {
+      return React.DOM.table(null,
+        //thead
+        React.DOM.thead({onClick: this._sort},
+          React.DOM.tr(null,
+            this.props.headers.map(function (title, idx) {
+              if (this.state.sortBy === idx) {
+                title += this.state.descending ? ' \u2191' : ' \u2193';
+              }
+              return React.DOM.th({key: idx}, title);
             }, this)
           )
+        ),
+
+        //tbody
+        React.DOM.tbody({onDoubleClick: this._showEditor}, this.state.data.map(function (row, rowIdx) {
+            return React.DOM.tr({key: rowIdx},
+              row.map(function (cell, cellIdx) {
+                var tdContent = cell;
+
+                var edit = this.state.edit;
+                if (edit && edit.row === rowIdx && edit.cell === cellIdx) {
+                  tdContent = React.DOM.form({onSubmit: this._saveFormEdited},
+                    React.DOM.input({
+                      type: 'text',
+                      defaultValue: cell
+                    })
+                  );
+                }
+
+                return React.DOM.td({key: cellIdx, 'data-row': rowIdx}, tdContent)
+              }, this)
+            )
+          }, this)
         )
+      );
+    },
+
+    _renderToolbar: function() {
+      return React.DOM.div({id: 'toolbarHolder'},
+        React.DOM.button({className: 'toolbar'}, "search")
+      );
+    },
+
+    render: function () {
+      return React.DOM.div({id:'root'},
+        this._renderToolbar(),
+        this._renderTable()
       );
     }
   });
+
 
   var headers = [
     "Book", "Author", "Language", "Published", "Sales"
