@@ -2,3 +2,4 @@ node_modules
 */js/build/*
 bundle.css
 bundle.js
+discover-bundle.js
